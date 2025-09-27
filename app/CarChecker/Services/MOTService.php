@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services;
+namespace App\CarChecker\Services;
 
-use App\Exceptions\MOTServiceException;
+use App\CarChecker\Exceptions\MOTServiceException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;

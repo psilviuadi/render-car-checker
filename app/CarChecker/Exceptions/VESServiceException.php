@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Exceptions;
+namespace App\CarChecker\Exceptions;
 
 use Exception;
 
-class MOTServiceException extends Exception
+class VESServiceException extends Exception
 {
     public ?array $apiResponse;
 

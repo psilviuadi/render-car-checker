@@ -1,5 +1,6 @@
 <template>
   <div class="bg-gray-800 p-4 rounded mb-4 shadow">
+    {{ data.make }}
     <h2 class="text-xl font-bold mb-2">VES Info</h2>
     <ul class="space-y-1">
       <li><strong>Make:</strong> {{ data.make }}</li>

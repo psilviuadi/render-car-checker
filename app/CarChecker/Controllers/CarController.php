@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\CarChecker\Controllers;
 
-use App\Exceptions\MOTServiceException;
-use App\Exceptions\VESServiceException;
+use App\CarChecker\Exceptions\MOTServiceException;
+use App\CarChecker\Exceptions\VESServiceException;
+use App\CarChecker\Services\MOTService;
+use App\CarChecker\Services\VESService;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Services\MOTService;
-use App\Services\VESService;
 use Illuminate\Support\Facades\Log;
 
 class CarController extends Controller
