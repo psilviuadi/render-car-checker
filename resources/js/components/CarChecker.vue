@@ -5,8 +5,11 @@
     <form @submit.prevent="fetchCarData" class="mb-6 flex flex-col space-y-2">
       <input v-model="plate" type="text" placeholder="Enter registration plate"
         class="p-2 rounded bg-gray-800 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-      <button type="submit" class="p-2 bg-blue-600 hover:bg-blue-700 rounded font-bold">
+      <button v-if="!loading" type="submit" class="p-2 bg-blue-600 hover:bg-blue-700 rounded font-bold">
         Check Cars
+      </button>
+      <button v-else class="p-2 bg-gray-600 rounded font-bold" disabled>
+        Loading...
       </button>
     </form>
 
@@ -99,6 +102,7 @@ export default {
       }
 
       try {
+        this.loading = true;
         const [vesRes, motRes] = await Promise.all([
           axios.get(`/api/ves/${this.plate}`),
           axios.get(`/api/mot/${this.plate}`)
@@ -108,9 +112,24 @@ export default {
         this.motData = motRes.data;
       } catch (err) {
         console.error(err);
-        this.error = 'Failed to fetch car data. Please try again later.';
+        this.error = 'Failed to fetch car data.';
       }
+      this.loading = false;
     }
   }
 };
 </script>
+<style scoped>
+.loader {
+  font-size: 1.2em;
+  text-align: center;
+  padding: 20px;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.3; }
+  50% { opacity: 1; }
+  100% { opacity: 0.3; }
+}
+</style>

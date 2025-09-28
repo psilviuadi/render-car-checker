@@ -65,11 +65,38 @@ class CarController extends Controller
 
     public function getVES(Request $request, string $plate)
     {
-        return $this->vesService->lookup($plate);
+        try {
+            return $this->vesService->lookup($plate);
+        } catch (\Throwable $th) {
+            logger()->error(
+                __METHOD__,
+                [
+                    'Error Class' => $th::class,
+                    'message' => (string) $th
+                ]
+            );
+            return response()->json([
+                "error" => "Failed to fetch data"
+            ], 500);
+        }
+        
     }
 
     public function getMOT(Request $request, string $plate)
     {
-        return $this->motService->getHistoryForLicencePlate($plate);
+        try {
+            return $this->motService->getHistoryForLicencePlate($plate);
+        } catch (\Throwable $th) {
+            logger()->error(
+                __METHOD__,
+                [
+                    'Error Class' => $th::class,
+                    'message' => (string) $th
+                ]
+            );
+            return response()->json([
+                "error" => "Failed to fetch data"
+            ], 500);
+        }
     }
 }
