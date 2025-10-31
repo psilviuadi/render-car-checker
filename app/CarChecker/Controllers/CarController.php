@@ -4,6 +4,7 @@ namespace App\CarChecker\Controllers;
 
 use App\CarChecker\Exceptions\MOTServiceException;
 use App\CarChecker\Exceptions\VESServiceException;
+use App\CarChecker\Services\AIService;
 use App\CarChecker\Services\MOTService;
 use App\CarChecker\Services\VESService;
 use App\Http\Controllers\Controller;
@@ -14,7 +15,8 @@ class CarController extends Controller
 {
     public function __construct(
         protected MOTService $motService,
-        protected VESService $vesService
+        protected VESService $vesService,
+        protected AIService $aiService,
     ) {}
 
     public function lookup(Request $request)
@@ -43,6 +45,7 @@ class CarController extends Controller
                     'error' => $apiDebug,
                 ];
             }
+
             try {
                 $car['ves'] = [
                     'type' => 'data',
@@ -61,6 +64,26 @@ class CarController extends Controller
         }
 
         return view('check-car', compact('car'));
+    }
+
+    public function getAgentReview(Request $request, string $plate)
+    {
+        try {
+            return [
+                'review' => $this->aiService->generateText($plate),
+            ];
+        } catch (\Throwable $th) {
+            logger()->error(
+                __METHOD__,
+                [
+                    'Error Class' => $th::class,
+                    'message' => (string) $th
+                ]
+            );
+            return response()->json([
+                "error" => "Failed to fetch data"
+            ], 500);
+        }
     }
 
     public function getVES(Request $request, string $plate)

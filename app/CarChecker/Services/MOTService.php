@@ -31,30 +31,32 @@ class MOTService
      */
     public function getHistoryForLicencePlate(string $licence): array
     {
-        $licence = strtoupper(trim($licence));
+        return Cache::remember("mot_history_{$licence}", 60*60*24, function () use ($licence) {
+            $licence = strtoupper(trim($licence));
 
-        $accessToken = $this->getAccessToken();
-        if (!$accessToken) {
-            throw new MOTServiceException('Unable to get access token.');
-        }
+            $accessToken = $this->getAccessToken();
+            if (!$accessToken) {
+                throw new MOTServiceException('Unable to get access token.');
+            }
 
-        $response = Http::withHeaders([
-            'Authorization' => "Bearer {$accessToken}",
-            'X-API-Key'     => $this->apiKey,
-        ])->get($this->endpoint . $licence);
+            $response = Http::withHeaders([
+                'Authorization' => "Bearer {$accessToken}",
+                'X-API-Key'     => $this->apiKey,
+            ])->get($this->endpoint . $licence);
 
-        $responseBody = $response->json();
+            $responseBody = $response->json();
 
-        if (!$response->ok()) {
-            Log::error(__METHOD__ . " - response is not ok", $responseBody);
-            throw new MOTServiceException(
-                'Failed to retrieve MOT data from the API.',
-                $responseBody
-            );
-        }
-        logger()->debug(__METHOD__, $responseBody);
+            if (!$response->ok()) {
+                Log::error(__METHOD__ . " - response is not ok", $responseBody);
+                throw new MOTServiceException(
+                    'Failed to retrieve MOT data from the API.',
+                    $responseBody
+                );
+            }
+            logger()->debug(__METHOD__, $responseBody);
 
-        return $responseBody;
+            return $responseBody;
+        });
     }
 
     /**

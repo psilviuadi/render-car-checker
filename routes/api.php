@@ -1,6 +1,7 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\CarChecker\Controllers\CarController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +14,8 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group([], function() {
+    Route::get('/ves/{plate}', [CarController::class, 'getVES'])->name('car.ves');
+    Route::get('/mot/{plate}', [CarController::class, 'getMOT'])->name('car.mot');
+    Route::get('/agent-review/{plate}', [CarController::class, 'getAgentReview'])->name('car.agent_review');
 });

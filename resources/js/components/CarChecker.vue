@@ -17,6 +17,12 @@
       {{ error }}
     </div>
 
+    <div v-if="!loading && (vesData || motData)" class="bg-gray-800 p-4 rounded mb-4 shadow">
+      <h2 class="text-xl font-bold mb-2">Agent Review - Is this car worth buying?</h2>
+      <p v-if="agentReviewData">{{ agentReviewData }}</p>
+      <p v-else>Agent is thinking...</p>
+    </div>
+
     <div v-if="vesData && motData" class="bg-gray-800 p-4 rounded mb-4 shadow">
       <ul class="space-y-1">
         <li>
@@ -59,6 +65,7 @@ export default {
       plate: '',
       vesData: null,
       motData: null,
+      agentReviewData: null,
       error: null,
     };
   },
@@ -104,9 +111,10 @@ export default {
 
       try {
         this.loading = true;
+        this.agentReviewData = null;
         const [vesRes, motRes] = await Promise.all([
           axios.get(`/api/ves/${this.plate}`),
-          axios.get(`/api/mot/${this.plate}`)
+          axios.get(`/api/mot/${this.plate}`),
         ]);
 
         this.vesData = vesRes.data;
@@ -115,6 +123,13 @@ export default {
         console.error(err);
         this.error = 'Failed to fetch car data.';
       }
+
+      axios.get(`/api/agent-review/${this.plate}`).then(agentReviewRes => {
+        this.agentReviewData = agentReviewRes.data.review;
+      }).catch(error => {
+        this.agentReviewData = "Not sure. I cannot provide a review at this time.";
+        console.error('Failed to fetch agent review:', error);
+      });
       this.loading = false;
     }
   }
