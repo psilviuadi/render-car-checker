@@ -53,7 +53,6 @@ class MOTService
                     $responseBody
                 );
             }
-            logger()->debug(__METHOD__, $responseBody);
 
             return $responseBody;
         });
@@ -75,7 +74,7 @@ class MOTService
                 Log::error(__METHOD__ . " - response is not ok", $response->json());
                 return null;
             }
-            Log::debug(__METHOD__, $response->json());
+
             return $response->json()['access_token'] ?? null;
         });
     }

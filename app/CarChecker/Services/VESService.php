@@ -19,7 +19,7 @@ class VESService
 
             // Throw exception on failure
             $response->throw();
-            logger()->debug(__METHOD__, $response->json());
+
             return $response->json();
         });
     }

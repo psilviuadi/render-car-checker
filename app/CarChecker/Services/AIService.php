@@ -66,8 +66,9 @@ class AIService
                 'x-goog-api-key' => $this->googleGeminiApiKey,
                 'Content-Type'  => 'application/json',
             ])->post('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent', $payload);
-            logger()->debug(__METHOD__, ['payload' => $payload, 'response' => $response->json()]);
-
+            if (!$response->ok()) {
+                throw new \Exception('Failed to retrieve AI data from the API.');
+            }
             return $response->json()['candidates'][0]['content']['parts'][0]['text'];
         });
     }
